@@ -31,10 +31,10 @@ void ConnectionV10::stop() {
 } 
 
 void ConnectionV10::read_() {
-    static thread_local parser::RequestParser pars;
     socket_.async_read_some(
         boost::asio::buffer(reqBuf_), 
         [this] (boost::system::error_code ec, std::size_t byteTransfered) {
+            static thread_local parser::RequestParser pars;
             if (!ec) {
                 boost::iostreams::stream<boost::iostreams::array_source> 
                     is(reqBuf_.data(), byteTransfered);

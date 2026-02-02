@@ -1,6 +1,6 @@
 %language "c++"
 
-%define parse.trace   /* uncom for trace */ 
+/* %define parse.trace */  /* uncom for trace */ 
 
 %skeleton "lalr1.cc"
 %param { std::pair<FlexLexer*, http_server::Request*> flexNRequest }
@@ -34,8 +34,6 @@
 
 
 %defines
-
-%token ERR
 
 %token HTTP
 %token<int> NUMBER

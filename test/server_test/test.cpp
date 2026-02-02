@@ -1,4 +1,5 @@
 #include <iostream>
+#include <thread>
 
 #include "irequest_handler.hpp"
 #include "server.hpp"
@@ -32,6 +33,10 @@ class TestHandler : public IRequestHandler {
 
 
 int main() {
-    auto s = http_server::createV10("localhost", "6666", std::make_shared<http_server::request_handler::TestHandler>());
+    auto s = http_server::createV10(
+        "localhost", "6666", 
+        std::make_shared<http_server::request_handler::TestHandler>(), 
+        std::thread::hardware_concurrency()
+    );
     s.run();
 }

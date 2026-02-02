@@ -8,10 +8,12 @@ Server::Server(
     const std::string& address, 
     const std::string& port,  
     std::shared_ptr<request_handler::IRequestHandler> requestHandler,
-    std::unique_ptr<detail__::connection::IConnectionFabric> conFabric) :
+    std::unique_ptr<detail__::connection::IConnectionFabric> conFabric,
+    int threadsCount) :
     requestHandler_(requestHandler)
     , conFabric_(std::move(conFabric))
     , conManager_(std::make_shared<detail__::ConnectionManager>())
+    , ctx_(threadsCount)
     , acceptor_(ctx_)
     , signals_(ctx_)
 {
@@ -37,7 +39,7 @@ Server::Server(
 }
 
 void Server::run() {
-    ctx_.run();
+    ctx_.join();
 }
 
 void Server::accept() {
@@ -61,13 +63,15 @@ void Server::accept() {
 Server createV10(
     const std::string& address, 
     const std::string& port,  
-    std::shared_ptr<request_handler::IRequestHandler> requestHandler)
+    std::shared_ptr<request_handler::IRequestHandler> requestHandler,
+    int threadsCount)
 {
     return Server(
         address, 
         port, 
         requestHandler, 
-        std::make_unique<detail__::connection::ConnectionV10Fabric>());
+        std::make_unique<detail__::connection::ConnectionV10Fabric>(),
+        threadsCount);
 }
 
 } // namespace http_server 

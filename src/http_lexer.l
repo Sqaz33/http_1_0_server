@@ -1,5 +1,4 @@
 %option c++
-
 %option noyywrap
 
 %{
@@ -18,8 +17,6 @@ STRING  [^0-9 .:\/\n\r]+
 "\r"            { return yy::parser::token_type::CR;   }
 "\n"            { return yy::parser::token_type::LF;   }
 "/"             { return yy::parser::token_type::SLASH;  }
-{STRING}        { return yy::parser::token_type::STRING; }
-.               { return yy::parser::token_type::ERR;    }
- 
+{STRING}        { return yy::parser::token_type::STRING; } 
 
 %%

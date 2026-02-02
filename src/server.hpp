@@ -14,7 +14,8 @@ public:
         const std::string& address, 
         const std::string& port,  
         std::shared_ptr<request_handler::IRequestHandler> requestHandler,
-        std::unique_ptr<detail__::connection::IConnectionFabric> conFabric);
+        std::unique_ptr<detail__::connection::IConnectionFabric> conFabric,
+        int threadsCount);
 
 public:
     void run();
@@ -27,7 +28,7 @@ private:
     std::unique_ptr<detail__::connection::IConnectionFabric> conFabric_;
     std::shared_ptr<detail__::ConnectionManager> conManager_;
 
-    boost::asio::io_context ctx_;
+    boost::asio::thread_pool ctx_;
     boost::asio::ip::tcp::acceptor acceptor_;
     boost::asio::signal_set signals_;    
 };
@@ -35,6 +36,7 @@ private:
 Server createV10(
     const std::string& address, 
     const std::string& port,  
-    std::shared_ptr<request_handler::IRequestHandler> requestHandler);
+    std::shared_ptr<request_handler::IRequestHandler> requestHandler,
+    int threadsCount);
 
 } // namespace http_server
