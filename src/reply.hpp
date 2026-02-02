@@ -50,6 +50,7 @@ private:
     status_type status_;
     std::string content_;
     std::vector<Header> headers_;
+    mutable std::string repStr_;
 };
 
 }

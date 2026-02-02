@@ -37,43 +37,43 @@ const std::string bad_gateway =
 const std::string service_unavailable =
   "503 Service Unavailable";
 
-boost::asio::const_buffer 
-statusToBuffer(http_server::Reply::status_type status) {
+std::string
+statusToString(http_server::Reply::status_type status) {
   switch (status) {
     case http_server::Reply::status_type::ok:
-        return boost::asio::buffer(ok);
+        return ok;
     case http_server::Reply::status_type::created:
-        return boost::asio::buffer(created);
+        return created;
     case http_server::Reply::status_type::accepted:
-        return boost::asio::buffer(accepted);
+        return accepted;
     case http_server::Reply::status_type::no_content:
-        return boost::asio::buffer(no_content);
+        return no_content;
     case http_server::Reply::status_type::multiple_choices:
-        return boost::asio::buffer(multiple_choices);
+        return multiple_choices;
     case http_server::Reply::status_type::moved_permanently:
-        return boost::asio::buffer(moved_permanently);
+        return moved_permanently;
     case http_server::Reply::status_type::moved_temporarily:
-        return boost::asio::buffer(moved_temporarily);
+        return moved_temporarily;
     case http_server::Reply::status_type::not_modified:
-        return boost::asio::buffer(not_modified);
+        return not_modified;
     case http_server::Reply::status_type::bad_request:
-        return boost::asio::buffer(bad_request);
+        return bad_request;
     case http_server::Reply::status_type::unauthorized:
-        return boost::asio::buffer(unauthorized);
+        return unauthorized;
     case http_server::Reply::status_type::forbidden:
-        return boost::asio::buffer(forbidden);
+        return forbidden;
     case http_server::Reply::status_type::not_found:
-        return boost::asio::buffer(not_found);
+        return not_found;
     case http_server::Reply::status_type::internal_server_error:
-        return boost::asio::buffer(internal_server_error);
+        return internal_server_error;
     case http_server::Reply::status_type::not_implemented:
-        return boost::asio::buffer(not_implemented);
+        return not_implemented;
     case http_server::Reply::status_type::bad_gateway:
-        return boost::asio::buffer(bad_gateway);
+        return bad_gateway;
     case http_server::Reply::status_type::service_unavailable:
-        return boost::asio::buffer(service_unavailable);
+        return service_unavailable;
     default:
-        return boost::asio::buffer(internal_server_error);
+        return internal_server_error;
     }
 }
 
@@ -97,15 +97,15 @@ void Reply::addHeader(Header h) {
     headers_.push_back(std::move(h));
 }
 
+static const std::string CRLF = "\r\n"; 
+static const std::string NAME_VALUE_SEPARATOR = ": ";
+
 std::vector<boost::asio::const_buffer> 
 Reply::toConstFuffer() const {
-    static const char CRLF[] = "\r\n"; 
-    static const char NAME_VALUE_SEPARATOR[] = ": ";
-
     std::vector<boost::asio::const_buffer> bufs;
-    bufs.push_back(boost::asio::buffer(http_));
-    bufs.push_back(boost::asio::buffer(" "));
-    bufs.push_back(statusToBuffer(status_));
+    
+    repStr_ = std::format("{} {}\r\n", http_, std::move(statusToString(status_)));
+    bufs.push_back(boost::asio::buffer(repStr_)); 
 
     for (auto&& h : headers_) {
         bufs.push_back(boost::asio::buffer(h.name));
@@ -114,7 +114,9 @@ Reply::toConstFuffer() const {
         bufs.push_back(boost::asio::buffer(CRLF));
     }
 
-    bufs.push_back(boost::asio::buffer(CRLF));
+    if (!content_.empty()) {
+        bufs.push_back(boost::asio::buffer(CRLF));
+    }
     bufs.push_back(boost::asio::buffer(content_));
 
     return bufs;

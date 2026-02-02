@@ -18,7 +18,7 @@ ConnectionV10::ConnectionV10(
     boost::asio::ip::tcp::socket socket, 
     std::shared_ptr<ConnectionManager> manager,
     std::shared_ptr<request_handler::IRequestHandler> requestHandler) :
-    IConnection(std::move(socket), manager, requestHandler_)
+    IConnection(std::move(socket), manager, requestHandler)
     , rep_(1, 0)
 {}
 

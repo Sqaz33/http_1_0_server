@@ -2,6 +2,9 @@ cmake_minimum_required(VERSION 3.5 FATAL_ERROR)
 
 project(http_1_0_server)
 
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED TRUE)
+
 enable_testing()
 
 find_package(Boost REQUIRED COMPONENTS system)
@@ -21,7 +24,6 @@ bison_target(parser
     ${CMAKE_CURRENT_BINARY_DIR}/http_parser.cpp
     COMPILE_FLAGS "--defines=${CMAKE_CURRENT_BINARY_DIR}/http_parser.hpp"
 )
-# add_flex_bison_dependency(scanner parser)
 # < http parser
 
 file(GLOB SRC "${CMAKE_SOURCE_DIR}/src/*.cpp")
@@ -33,9 +35,6 @@ add_library(${PROJECT_NAME} SHARED
 
 target_link_libraries(${PROJECT_NAME} PRIVATE Boost::system)
 
-set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 20)
-set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD_REQUIRED TRUE)
-
 target_include_directories(${PROJECT_NAME} PUBLIC "${CMAKE_SOURCE_DIR}/src")
 target_include_directories(${PROJECT_NAME} PRIVATE "${CMAKE_BINARY_DIR}")
 
@@ -44,3 +43,4 @@ target_include_directories(flex_bison_src PRIVATE "${CMAKE_SOURCE_DIR}/src")
 target_include_directories(flex_bison_src PRIVATE "${CMAKE_BINARY_DIR}")
 
 add_subdirectory("test/parse_test")
+add_subdirectory("test/server_test")

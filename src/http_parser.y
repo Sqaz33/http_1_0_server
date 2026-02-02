@@ -61,7 +61,7 @@
 
 %%
 
-request:       req_line headers opt_msg_body { 
+request:       req_line headers CR LF opt_msg_body { 
                                                flexNRequest.second->setContent(content.str()); 
                                                content.str(""); 
                                                content.clear(); 
@@ -118,7 +118,7 @@ msg_body:      msg_body_char
              | msg_body msg_body_char    
 
 opt_msg_body: /* empty */
-            | CR LF msg_body 
+            | msg_body 
 
 %%
 

@@ -9,6 +9,7 @@ namespace detail__ {
 
 void ConnectionManager::start(connection::IConSharedPtr con) {
     cons_[con.get()] = con;
+    con->start();
 }
 
 void ConnectionManager::stop(connection::IConSharedPtr con) {
