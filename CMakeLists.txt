@@ -2,9 +2,6 @@ cmake_minimum_required(VERSION 3.5 FATAL_ERROR)
 
 project(http_1_0_server)
 
-set(CMAKE_CXX_STANDARD 20)
-set(CMAKE_CXX_STANDARD_REQUIRED TRUE)
-
 enable_testing()
 
 find_package(Boost REQUIRED COMPONENTS system)
@@ -26,21 +23,25 @@ bison_target(parser
 )
 # < http parser
 
-file(GLOB SRC "${CMAKE_SOURCE_DIR}/src/*.cpp")
+file(GLOB SRC "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp")
 
 add_library(${PROJECT_NAME} SHARED 
                 ${SRC}                
                 ${BISON_parser_OUTPUTS}
                 ${FLEX_scanner_OUTPUTS})
 
+
+set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 20)
+set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD_REQUIRED TRUE)
+
 target_link_libraries(${PROJECT_NAME} PRIVATE Boost::system)
 
-target_include_directories(${PROJECT_NAME} PUBLIC "${CMAKE_SOURCE_DIR}/src")
-target_include_directories(${PROJECT_NAME} PRIVATE "${CMAKE_BINARY_DIR}")
+target_include_directories(${PROJECT_NAME} PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/src")
+target_include_directories(${PROJECT_NAME} PRIVATE "${CMAKE_CURRENT_BINARY_DIR}")
 
 add_library(flex_bison_src STATIC ${BISON_parser_OUTPUTS} ${FLEX_scanner_OUTPUTS})
-target_include_directories(flex_bison_src PRIVATE "${CMAKE_SOURCE_DIR}/src")
-target_include_directories(flex_bison_src PRIVATE "${CMAKE_BINARY_DIR}")
+target_include_directories(flex_bison_src PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/src")
+target_include_directories(flex_bison_src PRIVATE "${CMAKE_CURRENT_BINARY_DIR}")
 
 add_subdirectory("test/parse_test")
 add_subdirectory("test/server_test")
