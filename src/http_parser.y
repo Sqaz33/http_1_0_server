@@ -36,7 +36,7 @@
 %defines
 
 %token HTTP
-%token<int> NUMBER
+%token<std::string> NUMBER
 %token DOT
 %token COLON
 %token SPACE
@@ -53,6 +53,7 @@
 %nterm opt_msg_body
 %nterm uri
 %nterm uri_char
+%nterm header_msg
 %nterm opt_spaces
 
 %start request
@@ -70,8 +71,8 @@ req_line:      STRING SPACE uri SPACE HTTP SLASH NUMBER DOT NUMBER CR LF  {
                                                                             flexNRequest.second->setUri(uriSS.str());
                                                                             uriSS.str("");
                                                                             uriSS.clear();
-                                                                            flexNRequest.second->sethttpVersionMajor($7);
-                                                                            flexNRequest.second->sethttpVersionMinor($9);
+                                                                            flexNRequest.second->sethttpVersionMajor(std::stoi($7));
+                                                                            flexNRequest.second->sethttpVersionMinor(std::stoi($9));
                                                                           }
 
 uri_char: HTTP   { uriSS << "HTTP"; }
@@ -87,14 +88,19 @@ uri: uri_char
 headers:       header
              | headers header
 
-header:        STRING opt_spaces COLON opt_spaces uri CR LF   { 
-                                                                http_server::Header h; 
-                                                                h.name = std::move($1);
-                                                                h.value = uriSS.str();
-                                                                uriSS.str("");
-                                                                uriSS.clear();
-                                                                flexNRequest.second->addHeader(std::move(h)); 
-                                                               }
+header:        STRING opt_spaces COLON opt_spaces header_msg CR LF { 
+                                                                      http_server::Header h; 
+                                                                      h.name = std::move($1);
+                                                                      h.value = uriSS.str();
+                                                                      uriSS.str("");
+                                                                      uriSS.clear();
+                                                                      flexNRequest.second->addHeader(std::move(h)); 
+                                                                    }
+
+header_msg:     uri_char
+          |     header_msg uri_char
+          |     header_msg SPACE      { uriSS << ' '; }
+
 
 opt_spaces: /* empty */
           | spaces
@@ -127,10 +133,7 @@ parser::token_type yylex(parser::semantic_type* yylval,
     auto* lexer = flexNRequest.first;
     auto tt = static_cast<parser::token_type>(lexer->yylex());
      switch (tt) {
-        case (yy::parser::token_type::NUMBER):
-            yylval->as<int>() 
-                = std::stoi(lexer->YYText());
-            break;
+        case (yy::parser::token_type::NUMBER): 
         case (yy::parser::token_type::STRING):
             yylval->emplace<std::string>() = 
                 std::string(lexer->YYText(), lexer->YYLeng());

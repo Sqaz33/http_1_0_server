@@ -10,8 +10,7 @@ int main() {
     
     std::stringstream ss;
     ss << "POST /login HTTP/1.0\r\n";
-    ss << "Host: example.com\r\n";
-    ss << "\r\nasdfsadfsadf HTTP \r\n";
+    ss << "Host: \"02002-010-020 23:59:590.000\"\r\n";
 
     bool res = par.parse(req, ss);
     for (auto [n, v] : req.headers()) {
