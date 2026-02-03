@@ -40,8 +40,8 @@ target_include_directories(${PROJECT_NAME} PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/s
 target_include_directories(${PROJECT_NAME} PRIVATE "${CMAKE_CURRENT_BINARY_DIR}")
 
 add_library(flex_bison_src STATIC ${BISON_parser_OUTPUTS} ${FLEX_scanner_OUTPUTS})
-target_include_directories(flex_bison_src PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/src")
-target_include_directories(flex_bison_src PRIVATE "${CMAKE_CURRENT_BINARY_DIR}")
+target_include_directories(flex_bison_src PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/src")
+target_include_directories(flex_bison_src PUBLIC "${CMAKE_CURRENT_BINARY_DIR}")
 
 add_subdirectory("test/parse_test")
 add_subdirectory("test/server_test")

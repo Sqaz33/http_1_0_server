@@ -8,9 +8,6 @@ FetchContent_MakeAvailable(googletest)
 
 add_executable(http_request_parser_test test.cpp ${SRC})
 
-target_include_directories(http_request_parser_test PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/src")
-target_include_directories(http_request_parser_test  PRIVATE "${CMAKE_CURRENT_BINARY_DIR}")
-
 target_link_libraries(http_request_parser_test PRIVATE flex_bison_src)
     
 set_property(TARGET http_request_parser_test PROPERTY CXX_STANDARD 20)
