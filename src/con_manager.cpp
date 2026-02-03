@@ -13,20 +13,24 @@ std::mutex mut;
 bool end = false;
 
 void ConnectionManager::start(connection::IConSharedPtr con) {
-    std::lock_guard lc(mut);
-    if (!end) {
-        cons_[con.get()] = con;
-        con->start();
+    {
+        std::lock_guard lc(mut); 
+        if (!end) {
+            cons_[con.get()] = con;
+        }
     }
+    con->start();
 
 }
 
 void ConnectionManager::stop(connection::IConSharedPtr con) {
-    std::lock_guard lc(mut);
-    if (!end) {
-        cons_.erase(con.get());
-        con->stop();
+    {
+        std::lock_guard lc(mut);
+        if (!end) {
+            cons_.erase(con.get());
+        }
     }
+    con->stop();
 
 }
 
