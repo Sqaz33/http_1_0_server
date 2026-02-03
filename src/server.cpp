@@ -35,14 +35,14 @@ Server::Server(
     acceptor_.bind(endpoint);
     acceptor_.listen();
 
-    accept();
+    accept_();
 }
 
 void Server::run() {
     ctx_.join();
 }
 
-void Server::accept() {
+void Server::accept_() {
     acceptor_.async_accept(
         [this] 
         (boost::system::error_code ec, boost::asio::ip::tcp::socket socket) {
@@ -54,7 +54,7 @@ void Server::accept() {
                         std::move(socket), conManager_, requestHandler_)
                 );
             }
-            accept();
+            accept_();
         }
     );
 }

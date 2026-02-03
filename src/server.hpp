@@ -21,7 +21,7 @@ public:
     void run();
 
 private:
-    void accept();
+    void accept_();
 
 private:
     std::shared_ptr<request_handler::IRequestHandler> requestHandler_;
