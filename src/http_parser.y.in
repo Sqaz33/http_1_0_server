@@ -1,6 +1,6 @@
 %language "c++"
 
-/* %define parse.trace */  /* uncom for trace */ 
+@DEFINE_TRACE@ 
 
 %skeleton "lalr1.cc"
 %param { std::pair<FlexLexer*, http_server::Request*> flexNRequest }

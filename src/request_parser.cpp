@@ -12,7 +12,9 @@ RequestParser::RequestParser() :
 
 bool RequestParser::parse(Request& req, std::istream& in) {
     lexer_.switch_streams(&in);
-    // parser_.set_debug_level(1);
+#ifdef DEBUG_PARSER
+    parser_.set_debug_level(1);
+#endif // DEBUG_PARSER
     bool ok = !parser_.parse();
     req = std::move(req_);
     return ok;
