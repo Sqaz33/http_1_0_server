@@ -35,8 +35,7 @@ class TestHandler : public IRequestHandler {
 int main() {
     auto s = http_server::createV10(
         "localhost", "6666", 
-        std::make_shared<http_server::request_handler::TestHandler>(), 
-        std::thread::hardware_concurrency()
+        std::make_shared<http_server::request_handler::TestHandler>()
     );
     s.run();
 }
