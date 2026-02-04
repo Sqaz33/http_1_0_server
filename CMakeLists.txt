@@ -22,16 +22,16 @@ flex_target(
 set(DEFINE_TRACE "")
 configure_file(src/http_parser.y.in src/http_parser.y @ONLY)
 bison_target(parser
-    "build/src/http_parser.y"
-    ${CMAKE_CURRENT_BINARY_DIR}/http_parser.cpp
+    "${CMAKE_CURRENT_BINARY_DIR}/src/http_parser.y"
+    "${CMAKE_CURRENT_BINARY_DIR}/http_parser.cpp"
     COMPILE_FLAGS "--defines=${CMAKE_CURRENT_BINARY_DIR}/http_parser.hpp"
 )
 
 set(DEFINE_TRACE "%define parse.trace")
 configure_file(src/http_parser.y.in src/debug_http_parser.y @ONLY)
 bison_target(debug_parser
-    "build/src/debug_http_parser.y"
-    ${CMAKE_CURRENT_BINARY_DIR}/debug_http_parser.cpp
+    "${CMAKE_CURRENT_BINARY_DIR}/src/debug_http_parser.y"
+    "${CMAKE_CURRENT_BINARY_DIR}/debug_http_parser.cpp"
     COMPILE_FLAGS "--defines=${CMAKE_CURRENT_BINARY_DIR}/debug_http_parser.hpp"
 )
 
