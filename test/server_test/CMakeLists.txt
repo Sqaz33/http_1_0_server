@@ -7,8 +7,6 @@ set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
 
 add_executable(server_test test.cpp)
-
 set_property(TARGET server_test PROPERTY CXX_STANDARD 20)
 set_property(TARGET server_test PROPERTY CXX_STANDARD_REQUIRED TRUE)
-
 target_link_libraries(server_test PRIVATE ${PROJECT_NAME})

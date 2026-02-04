@@ -10,7 +10,7 @@ namespace request_handler {
 struct IRequestHandler {
     virtual ~IRequestHandler() = default;
 
-    virtual void handle(const Request& req, Reply& rep) = 0; // может вызываться из нескольких потоков
+    virtual void handle(const Request& req, Reply& rep) = 0; 
 };
 
 } //namespace http_server 

@@ -1,11 +1,11 @@
 #include "icon.hpp"
 
-
 namespace http_server {
 
 namespace detail__ {
 
 namespace connection {
+
 IConnection::IConnection(
     boost::asio::ip::tcp::socket socket, 
     std::shared_ptr<ConnectionManager> manager,

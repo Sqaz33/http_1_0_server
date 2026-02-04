@@ -57,7 +57,6 @@ void Server::accept_() {
     );
 }
 
-
 Server createV10(
     const std::string& address, 
     const std::string& port,  

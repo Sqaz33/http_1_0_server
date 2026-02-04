@@ -24,8 +24,9 @@
   #include <FlexLexer.h>
 
   namespace yy {
-      parser::token_type yylex(parser::semantic_type* yylval, 
-                               std::pair<FlexLexer*, http_server::Request*> flexNRequest); 
+      parser::token_type yylex(
+        parser::semantic_type* yylval, 
+        std::pair<FlexLexer*, http_server::Request*> flexNRequest); 
   }
 
   static std::stringstream content;
@@ -60,13 +61,13 @@
 
 %%
 
-request:       req_line headers CR LF opt_msg_body { 
-                                               flexNRequest.second->setContent(content.str()); 
-                                               content.str(""); 
-                                               content.clear(); 
-                                             }  
+request:        req_line headers CR LF opt_msg_body                       { 
+                                                                             flexNRequest.second->setContent(content.str()); 
+                                                                             content.str(""); 
+                                                                             content.clear(); 
+                                                                          }  
 
-req_line:      STRING SPACE uri SPACE HTTP SLASH NUMBER DOT NUMBER CR LF  {
+req_line:       STRING SPACE uri SPACE HTTP SLASH NUMBER DOT NUMBER CR LF {
                                                                             flexNRequest.second->setMethod(std::move($1));
                                                                             flexNRequest.second->setUri(uriSS.str());
                                                                             uriSS.str("");
@@ -75,60 +76,61 @@ req_line:      STRING SPACE uri SPACE HTTP SLASH NUMBER DOT NUMBER CR LF  {
                                                                             flexNRequest.second->sethttpVersionMinor(std::stoi($9));
                                                                           }
 
-uri_char: HTTP   { uriSS << "HTTP"; }
-        | NUMBER { uriSS << $1;     }
-        | DOT    { uriSS << '.';    }
-        | COLON  { uriSS << ':';    }
-        | STRING { uriSS << $1;     }
-        | SLASH  { uriSS << '/';    }
+uri_char:       HTTP                                                      { uriSS << "HTTP"; }
+          |     NUMBER                                                    { uriSS << $1;     }
+          |     DOT                                                       { uriSS << '.';    }
+          |     COLON                                                     { uriSS << ':';    }
+          |     STRING                                                    { uriSS << $1;     }
+          |     SLASH                                                     { uriSS << '/';    }
 
-uri: uri_char
-   | uri uri_char
+uri:            uri_char
+          |     uri uri_char
 
-headers:       header
-             | headers header
+headers:        header
+          |     headers header
 
-header:        STRING opt_spaces COLON opt_spaces header_msg CR LF { 
-                                                                      http_server::Header h; 
-                                                                      h.name = std::move($1);
-                                                                      h.value = uriSS.str();
-                                                                      uriSS.str("");
-                                                                      uriSS.clear();
-                                                                      flexNRequest.second->addHeader(std::move(h)); 
-                                                                    }
+header:         STRING opt_spaces COLON opt_spaces header_msg CR LF       { 
+                                                                            http_server::Header h; 
+                                                                            h.name = std::move($1);
+                                                                            h.value = uriSS.str();
+                                                                            uriSS.str("");
+                                                                            uriSS.clear();
+                                                                            flexNRequest.second->addHeader(std::move(h)); 
+                                                                          }
 
 header_msg:     uri_char
           |     header_msg uri_char
-          |     header_msg SPACE      { uriSS << ' '; }
+          |     header_msg SPACE                                          { uriSS << ' '; }
 
 
-opt_spaces: /* empty */
-          | spaces
+opt_spaces:     /* empty */
+          |     spaces
 
-spaces:        SPACE
-             | spaces SPACE
+spaces:         SPACE
+          |     spaces SPACE
 
-msg_body_char: HTTP   { content << "HTTP";       }
-             | NUMBER { content << $1;           }
-             | DOT    { content << '.';          }
-             | COLON  { content << ':';          }
-             | SPACE  { content << ' ';          }
-             | CR     { content << '\r';         }
-             | LF     { content << '\n';         }
-             | STRING { content << $1;           }
-             | SLASH  { content << '/';          }
+msg_body_char:  HTTP                                                      { content << "HTTP";       }
+             |  NUMBER                                                    { content << $1;           }
+             |  DOT                                                       { content << '.';          }
+             |  COLON                                                     { content << ':';          }
+             |  SPACE                                                     { content << ' ';          }
+             |  CR                                                        { content << '\r';         }
+             |  LF                                                        { content << '\n';         }
+             |  STRING                                                    { content << $1;           }
+             |  SLASH                                                     { content << '/';          }
 
-msg_body:      msg_body_char
-             | msg_body msg_body_char    
+msg_body:       msg_body_char
+             |  msg_body msg_body_char    
 
-opt_msg_body: /* empty */
-            | msg_body 
+opt_msg_body:   /* empty */
+            |   msg_body 
 
 %%
 
 namespace yy {
-parser::token_type yylex(parser::semantic_type* yylval, 
-                         std::pair<FlexLexer*, http_server::Request*> flexNRequest) 
+parser::token_type yylex(
+  parser::semantic_type* yylval, 
+  std::pair<FlexLexer*, http_server::Request*> flexNRequest) 
 {   
     auto* lexer = flexNRequest.first;
     auto tt = static_cast<parser::token_type>(lexer->yylex());
@@ -142,5 +144,5 @@ parser::token_type yylex(parser::semantic_type* yylval,
     return tt;
 }
 
-  void parser::error(const std::string& e) { }
+  void parser::error(const std::string&) { }
 }
