@@ -104,7 +104,7 @@ std::vector<boost::asio::const_buffer> Reply::toConstFuffer() const {
     return bufs;
 }
 
-std::size_t Reply::contenSize() const noexcept {
+std::size_t Reply::contentSize() const noexcept {
     return content_.size();
 }
 

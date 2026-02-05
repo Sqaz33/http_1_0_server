@@ -38,7 +38,7 @@ class Reply {
     void setContent(std::string content);
     void addHeader(Header h);
     std::vector<boost::asio::const_buffer> toConstFuffer() const;
-    std::size_t contenSize() const noexcept;
+    std::size_t contentSize() const noexcept;
 
    public:
     static Reply stockReply(status_type st, int httpVersionMajor,
