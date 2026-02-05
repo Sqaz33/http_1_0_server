@@ -5,25 +5,23 @@
 namespace http_server {
 
 Server::Server(
-    const std::string& address, 
-    const std::string& port,  
+    const std::string& address, const std::string& port,
     std::shared_ptr<request_handler::IRequestHandler> requestHandler,
-    std::unique_ptr<detail__::connection::IConnectionFabric> conFabric) :
-    requestHandler_(requestHandler)
-    , conFabric_(std::move(conFabric))
-    , conManager_(std::make_shared<detail__::ConnectionManager>())
-    , acceptor_(ctx_)
-    , signals_(ctx_)
-{
+    std::unique_ptr<detail__::connection::IConnectionFabric> conFabric)
+    : requestHandler_(requestHandler),
+      conFabric_(std::move(conFabric)),
+      conManager_(std::make_shared<detail__::ConnectionManager>()),
+      acceptor_(ctx_),
+      signals_(ctx_) {
     signals_.add(SIGINT);
     signals_.add(SIGTERM);
 #ifdef SIGQUIT
     signals_.add(SIGQUIT);
-#endif // SIGQUIT
+#endif  // SIGQUIT
     signals_.async_wait([this](boost::system::error_code, int) {
         acceptor_.close();
         conManager_->stopAll();
-    });  
+    });
 
     boost::asio::ip::tcp::resolver resolver(ctx_);
     boost::asio::ip::tcp::endpoint endpoint =
@@ -41,32 +39,25 @@ void Server::run() {
 }
 
 void Server::accept_() {
-    acceptor_.async_accept(
-        [this] 
-        (boost::system::error_code ec, boost::asio::ip::tcp::socket socket) {
-            if (!acceptor_.is_open()) return;
-            
-            if (!ec) {
-                conManager_->start(
-                    conFabric_->create(
-                        std::move(socket), conManager_, requestHandler_)
-                );
-            }
-            accept_();
+    acceptor_.async_accept([this](boost::system::error_code ec,
+                                  boost::asio::ip::tcp::socket socket) {
+        if (!acceptor_.is_open())
+            return;
+
+        if (!ec) {
+            conManager_->start(conFabric_->create(
+                std::move(socket), conManager_, requestHandler_));
         }
-    );
+        accept_();
+    });
 }
 
 Server createV10(
-    const std::string& address, 
-    const std::string& port,  
-    std::shared_ptr<request_handler::IRequestHandler> requestHandler)
-{
+    const std::string& address, const std::string& port,
+    std::shared_ptr<request_handler::IRequestHandler> requestHandler) {
     return Server(
-        address, 
-        port, 
-        requestHandler, 
+        address, port, requestHandler,
         std::make_unique<detail__::connection::ConnectionV10Fabric>());
 }
 
-} // namespace http_server 
+}  // namespace http_server

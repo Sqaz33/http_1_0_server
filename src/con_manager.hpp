@@ -9,17 +9,15 @@ namespace http_server {
 namespace detail__ {
 
 class ConnectionManager {
-public:
+   public:
     void start(connection::IConSharedPtr con);
     void stop(connection::IConSharedPtr con);
     void stopAll();
-    
-private:
-    std::map<
-        connection::IConnection*, 
-        connection::IConSharedPtr> cons_;
+
+   private:
+    std::map<connection::IConnection*, connection::IConSharedPtr> cons_;
 };
 
-} // namespace detail
+}  // namespace detail__
 
-} // namespace http_server
+}  // namespace http_server

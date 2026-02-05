@@ -9,16 +9,16 @@ namespace detail__ {
 namespace connection {
 
 class ConnectionV10Fabric : public IConnectionFabric {
-public:
+   public:
     std::shared_ptr<IConnection> create(
-        boost::asio::ip::tcp::socket socket, 
+        boost::asio::ip::tcp::socket socket,
         std::shared_ptr<ConnectionManager> manager,
-        std::shared_ptr<request_handler::IRequestHandler> requestHandler
-    ) override;
+        std::shared_ptr<request_handler::IRequestHandler> requestHandler)
+        override;
 };
 
-} // namespace connection
+}  // namespace connection
 
-} // namespace detail__
+}  // namespace detail__
 
-} // namespace 
+}  // namespace http_server

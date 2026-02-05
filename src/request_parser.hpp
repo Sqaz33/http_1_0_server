@@ -4,11 +4,11 @@
 
 #include <FlexLexer.h>
 
-#ifdef DEBUG_PARSER 
+#ifdef DEBUG_PARSER
 #include "debug_http_parser.hpp"
 #else
 #include "http_parser.hpp"
-#endif // DEBUG_PARSER 
+#endif  // DEBUG_PARSER
 
 #include "request.hpp"
 
@@ -19,20 +19,20 @@ namespace detail__ {
 namespace parser {
 
 class RequestParser {
-public:
+   public:
     RequestParser();
 
-public:
+   public:
     bool parse(Request& req, std::istream& in);
 
-private:
+   private:
     Request req_;
     yyFlexLexer lexer_;
     yy::parser parser_;
 };
 
-} // namespace parser
+}  // namespace parser
 
-} // namespace detail__
+}  // namespace detail__
 
-} // namespace http_server
+}  // namespace http_server

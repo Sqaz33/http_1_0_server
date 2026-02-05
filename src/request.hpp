@@ -8,7 +8,7 @@
 namespace http_server {
 
 class Request {
-public:
+   public:
     const std::string& method() const noexcept;
     void setMethod(std::string method);
 
@@ -27,7 +27,7 @@ public:
     const std::string& content() const noexcept;
     void setContent(std::string content);
 
-private:
+   private:
     std::string method_;
     std::string uri_;
     int httpVersionMajor_ = -1;
@@ -36,4 +36,4 @@ private:
     std::string content_;
 };
 
-} // namespace http_server
+}  // namespace http_server

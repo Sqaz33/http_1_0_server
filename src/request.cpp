@@ -2,7 +2,6 @@
 
 namespace http_server {
 
-
 const std::string& Request::method() const noexcept {
     return method_;
 }
@@ -51,4 +50,4 @@ void Request::setContent(std::string content) {
     content_.swap(content);
 }
 
-} // namespace http_server
+}  // namespace http_server
