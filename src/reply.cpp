@@ -104,6 +104,10 @@ std::vector<boost::asio::const_buffer> Reply::toConstFuffer() const {
     return bufs;
 }
 
+std::size_t Reply::contenSize() const noexcept {
+    return content_.size();
+}
+
 namespace {
 
 const char ok[] = "";
