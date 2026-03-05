@@ -11,7 +11,7 @@ namespace connection {
 std::shared_ptr<IConnection> ConnectionV10Fabric::create(
     boost::asio::ip::tcp::socket socket,
     std::shared_ptr<ConnectionManager> manager,
-    std::shared_ptr<request_handler::IRequestHandler> requestHandler) {
+    std::shared_ptr<request_handler::RequestHandler> requestHandler) {
     return std::make_shared<ConnectionV10>(std::move(socket), manager,
                                            requestHandler);
 }

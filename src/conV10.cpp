@@ -17,7 +17,7 @@ namespace connection {
 ConnectionV10::ConnectionV10(
     boost::asio::ip::tcp::socket socket,
     std::shared_ptr<ConnectionManager> manager,
-    std::shared_ptr<request_handler::IRequestHandler> requestHandler)
+    std::shared_ptr<request_handler::RequestHandler> requestHandler)
     : IConnection(std::move(socket), manager, requestHandler), rep_(1, 0) {}
 
 void ConnectionV10::start() {

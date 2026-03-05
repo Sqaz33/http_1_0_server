@@ -9,7 +9,7 @@ namespace connection {
 IConnection::IConnection(
     boost::asio::ip::tcp::socket socket,
     std::shared_ptr<ConnectionManager> manager,
-    std::shared_ptr<request_handler::IRequestHandler> requestHandler)
+    std::shared_ptr<request_handler::RequestHandler> requestHandler)
     : socket_(std::move(socket)),
       manager_(manager),
       requestHandler_(requestHandler) {}

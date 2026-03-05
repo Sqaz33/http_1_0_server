@@ -4,7 +4,7 @@
 
 #include <boost/asio.hpp>
 
-#include "irequest_handler.hpp"
+#include "request_handler.hpp"
 
 namespace http_server {
 
@@ -19,7 +19,7 @@ class IConnection {
     IConnection(
         boost::asio::ip::tcp::socket socket,
         std::shared_ptr<ConnectionManager> manager,
-        std::shared_ptr<request_handler::IRequestHandler> requestHandler);
+        std::shared_ptr<request_handler::RequestHandler> requestHandler);
 
     virtual ~IConnection() = default;
 
@@ -30,7 +30,7 @@ class IConnection {
    protected:
     boost::asio::ip::tcp::socket socket_;
     std::weak_ptr<ConnectionManager> manager_;
-    std::shared_ptr<request_handler::IRequestHandler> requestHandler_;
+    std::shared_ptr<request_handler::RequestHandler> requestHandler_;
 };
 
 using IConSharedPtr = std::shared_ptr<connection::IConnection>;

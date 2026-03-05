@@ -13,7 +13,7 @@ class ConnectionV10Fabric : public IConnectionFabric {
     std::shared_ptr<IConnection> create(
         boost::asio::ip::tcp::socket socket,
         std::shared_ptr<ConnectionManager> manager,
-        std::shared_ptr<request_handler::IRequestHandler> requestHandler)
+        std::shared_ptr<request_handler::RequestHandler> requestHandler)
         override;
 };
 

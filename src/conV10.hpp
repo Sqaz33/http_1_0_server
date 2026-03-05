@@ -4,7 +4,7 @@
 #include <memory>
 
 #include "icon.hpp"
-#include "irequest_handler.hpp"
+#include "request_handler.hpp"
 #include "reply.hpp"
 #include "request.hpp"
 
@@ -20,7 +20,7 @@ class ConnectionV10 final : public IConnection,
     ConnectionV10(
         boost::asio::ip::tcp::socket socket,
         std::shared_ptr<ConnectionManager> manager,
-        std::shared_ptr<request_handler::IRequestHandler> requestHandler);
+        std::shared_ptr<request_handler::RequestHandler> requestHandler);
 
    public:
     void start() override;

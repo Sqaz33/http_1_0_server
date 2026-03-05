@@ -4,14 +4,13 @@
 
 #include "con_manager.hpp"
 #include "icon_fabric.hpp"
-#include "irequest_handler.hpp"
+#include "request_handler.hpp"
 
 namespace http_server {
 
 class Server {
    public:
     Server(const std::string& address, const std::string& port,
-           std::shared_ptr<request_handler::IRequestHandler> requestHandler,
            std::unique_ptr<detail__::connection::IConnectionFabric> conFabric);
 
    public:
@@ -21,7 +20,7 @@ class Server {
     void accept_();
 
    private:
-    std::shared_ptr<request_handler::IRequestHandler> requestHandler_;
+    std::shared_ptr<request_handler::RequestHandler> requestHandler_;
     std::unique_ptr<detail__::connection::IConnectionFabric> conFabric_;
     std::shared_ptr<detail__::ConnectionManager> conManager_;
 
@@ -31,7 +30,6 @@ class Server {
 };
 
 Server createV10(
-    const std::string& address, const std::string& port,
-    std::shared_ptr<request_handler::IRequestHandler> requestHandler);
+    const std::string& address, const std::string& port);
 
 }  // namespace http_server

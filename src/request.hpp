@@ -21,8 +21,8 @@ class Request {
     int httpVersionMinor() const noexcept;
     void sethttpVersionMinor(int v);
 
-    const std::vector<Header>& headers() const noexcept;
-    void addHeader(Header h);
+    const std::vector<header::Header>& headers() const noexcept;
+    void addHeader(header::Header h);
 
     const std::string& content() const noexcept;
     void setContent(std::string content);
@@ -32,7 +32,7 @@ class Request {
     std::string uri_;
     int httpVersionMajor_ = -1;
     int httpVersionMinor_ = -1;
-    std::vector<Header> headers_;
+    std::vector<header::Header> headers_;
     std::string content_;
 };
 

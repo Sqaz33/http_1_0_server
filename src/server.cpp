@@ -6,9 +6,8 @@ namespace http_server {
 
 Server::Server(
     const std::string& address, const std::string& port,
-    std::shared_ptr<request_handler::IRequestHandler> requestHandler,
     std::unique_ptr<detail__::connection::IConnectionFabric> conFabric)
-    : requestHandler_(requestHandler),
+    : requestHandler_(new request_handler::RequestHandler),
       conFabric_(std::move(conFabric)),
       conManager_(std::make_shared<detail__::ConnectionManager>()),
       acceptor_(ctx_),
@@ -54,9 +53,9 @@ void Server::accept_() {
 
 Server createV10(
     const std::string& address, const std::string& port,
-    std::shared_ptr<request_handler::IRequestHandler> requestHandler) {
+    std::shared_ptr<request_handler::RequestHandler> requestHandler) {
     return Server(
-        address, port, requestHandler,
+        address, port,
         std::make_unique<detail__::connection::ConnectionV10Fabric>());
 }
 
