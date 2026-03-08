@@ -23,10 +23,10 @@ class RequestParser {
     RequestParser();
 
    public:
-    bool parse(Request& req, std::istream& in);
+    bool parse(request::Request& req, std::istream& in);
 
    private:
-    Request req_;
+    request::Request req_;
     yyFlexLexer lexer_;
     yy::parser parser_;
 };

@@ -3,7 +3,7 @@
 @DEFINE_TRACE@ 
 
 %skeleton "lalr1.cc"
-%param { std::pair<FlexLexer*, http_server::Request*> flexNRequest }
+%param { std::pair<FlexLexer*, http_server::request::Request*> flexNRequest }
 %define api.value.type variant
 
 %code requires
@@ -12,9 +12,11 @@
   #include <utility>
   #include <sstream>
   #include <iostream>
+  #include <map>
 
   #include "request.hpp"
   #include "header.hpp"
+  #include "method.hpp"
 
   class FlexLexer; 
 }
@@ -26,11 +28,30 @@
   namespace yy {
       parser::token_type yylex(
         parser::semantic_type* yylval, 
-        std::pair<FlexLexer*, http_server::Request*> flexNRequest); 
+        std::pair<FlexLexer*, http_server::request::Request*> flexNRequest); 
   }
 
   static std::stringstream content;
   static std::stringstream uriSS;
+
+  std::map<std::string, http_server::method::Method> methods {
+      {"GET", http_server::method::Method::GET},
+      {"POST", http_server::method::Method::POST},
+      {"PUT", http_server::method::Method::PUT},
+      {"DELETE", http_server::method::Method::DELETE},
+      {"PATCH", http_server::method::Method::PATCH},
+      {"HEAD", http_server::method::Method::HEAD},
+      {"OPTIONS", http_server::method::Method::OPTIONS},
+      {"CONNECT", http_server::method::Method::CONNECT},
+      {"TRACE", http_server::method::Method::TRACE}
+  };
+
+  auto getMethod(const std::string& str) {
+    if (!methods.contains(str)) {
+      return http_server::method::Method::ERR;
+    }
+    return methods[str];
+  }
 }
 
 
@@ -68,7 +89,7 @@ request:        req_line headers CR LF opt_msg_body                       {
                                                                           }  
 
 req_line:       STRING SPACE uri SPACE HTTP SLASH NUMBER DOT NUMBER CR LF {
-                                                                            flexNRequest.second->setMethod(std::move($1));
+                                                                            flexNRequest.second->setMethod(getMethod($1));
                                                                             flexNRequest.second->setUri(uriSS.str());
                                                                             uriSS.str("");
                                                                             uriSS.clear();
@@ -90,7 +111,7 @@ headers:        header
           |     headers header
 
 header:         STRING opt_spaces COLON opt_spaces header_msg CR LF       { 
-                                                                            http_server::Header h; 
+                                                                            http_server::header::Header h; 
                                                                             h.name = std::move($1);
                                                                             h.value = uriSS.str();
                                                                             uriSS.str("");
@@ -130,7 +151,7 @@ opt_msg_body:   /* empty */
 namespace yy {
 parser::token_type yylex(
   parser::semantic_type* yylval, 
-  std::pair<FlexLexer*, http_server::Request*> flexNRequest) 
+  std::pair<FlexLexer*, http_server::request::Request*> flexNRequest) 
 {   
     auto* lexer = flexNRequest.first;
     auto tt = static_cast<parser::token_type>(lexer->yylex());

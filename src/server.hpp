@@ -1,5 +1,7 @@
 #pragma once
 
+#include <type_traits>
+
 #include <boost/asio.hpp>
 
 #include "con_manager.hpp"
@@ -15,6 +17,8 @@ class Server {
 
    public:
     void run();
+
+    request_handler::detail__::Handler& regHandler(const std::string& uri);
 
    private:
     void accept_();
@@ -33,3 +37,5 @@ Server createV10(
     const std::string& address, const std::string& port);
 
 }  // namespace http_server
+
+#define SERVER_ROUTE(server, uri) server.regHandler(uri)

@@ -1,3 +1,5 @@
+#pragma once
+
 #include "icon_fabric.hpp"
 
 #include <memory>

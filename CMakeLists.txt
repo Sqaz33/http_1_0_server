@@ -62,7 +62,7 @@ add_library(${PROJECT_NAME} SHARED
                 ${SRC}                
                 ${BISON_parser_OUTPUTS}
                 ${FLEX_scanner_OUTPUTS})
-set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 20)
+set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 23)
 set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD_REQUIRED TRUE)
 target_link_libraries(${PROJECT_NAME} PRIVATE Boost::system)
 target_include_directories(${PROJECT_NAME} PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/src")

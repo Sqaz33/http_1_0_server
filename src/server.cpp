@@ -37,6 +37,10 @@ void Server::run() {
     ctx_.run();
 }
 
+request_handler::detail__::Handler& Server::regHandler(const std::string& uri) {
+    return requestHandler_->regHandler(uri);
+}
+
 void Server::accept_() {
     acceptor_.async_accept([this](boost::system::error_code ec,
                                   boost::asio::ip::tcp::socket socket) {
@@ -52,11 +56,9 @@ void Server::accept_() {
 }
 
 Server createV10(
-    const std::string& address, const std::string& port,
-    std::shared_ptr<request_handler::RequestHandler> requestHandler) {
+    const std::string& address, const std::string& port) {
     return Server(
         address, port,
         std::make_unique<detail__::connection::ConnectionV10Fabric>());
 }
-
 }  // namespace http_server

@@ -41,7 +41,7 @@ void ConnectionV10::read_() {
                     requestHandler_->handle(req_, rep_);
                     write_();
                 } else {
-                    rep_ = Reply::stockReply(Reply::status_type::bad_request, 1,
+                    rep_ = reply::Reply::stockReply(reply::Status::BAD_REQUEST, 1,
                                              0);
                     write_();
                 }

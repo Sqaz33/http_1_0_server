@@ -3,9 +3,11 @@
 #include <functional>
 #include <string>
 #include <vector>
+#include <unordered_set>
 
 #include "reply.hpp"
 #include "request.hpp"
+#include "method.hpp"
 
 namespace http_server {
 
@@ -15,16 +17,20 @@ namespace detail__ {
 
 class Handler {
 public:
-    using FuncT = std::function<void(const Request&, Reply&)>;
+    using FuncT = std::function<void(const request::Request&, reply::Reply&)>;
 
-    Handler(FuncT&& f, const std::string& uri);
+    Handler(const std::string& uri);
 
-    bool handle(const Request& req, Reply& rep);
+    Handler& operator()(FuncT&& f);
 
-    Handler& method(const std::string& method);
+    bool handle(const request::Request& req, reply::Reply& rep);
+
+    Handler& method(method::Method method);
 
 private:
-
+    FuncT f_;
+    std::string uri_;
+    std::unordered_set<typename method::Method> methods_;
 };
 
 } // namespace detail__
@@ -33,10 +39,11 @@ private:
 struct RequestHandler {
     using FuncT = typename detail__::Handler::FuncT;
 
-    void regHandler(FuncT handler, const std::string& uri);
-    void handle(const Request& req, Reply& rep);
+    detail__::Handler& regHandler(const std::string& uri);
+    void handle(const request::Request& req, reply::Reply& rep);
 
 private:
+    std::vector<std::unique_ptr<detail__::Handler>> handlers_;
 };
 
 }  // namespace request_handler

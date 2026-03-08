@@ -2,12 +2,14 @@
 
 namespace http_server {
 
-const std::string& Request::method() const noexcept {
+namespace request {
+
+method::Method Request::method() const noexcept {
     return method_;
 }
 
-void Request::setMethod(std::string method) {
-    method_.swap(method);
+void Request::setMethod(method::Method method) {
+    method_ = method;
 }
 
 const std::string& Request::uri() const noexcept {
@@ -34,11 +36,11 @@ void Request::sethttpVersionMinor(int v) {
     httpVersionMinor_ = v;
 }
 
-const std::vector<Header>& Request::headers() const noexcept {
+const std::vector<header::Header>& Request::headers() const noexcept {
     return headers_;
 }
 
-void Request::addHeader(Header h) {
+void Request::addHeader(header::Header h) {
     headers_.push_back(std::move(h));
 }
 
@@ -49,5 +51,7 @@ const std::string& Request::content() const noexcept {
 void Request::setContent(std::string content) {
     content_.swap(content);
 }
+
+} // namespace request
 
 }  // namespace http_server

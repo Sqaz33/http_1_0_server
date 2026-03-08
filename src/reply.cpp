@@ -21,39 +21,39 @@ const std::string not_implemented = "501 Not Implemented";
 const std::string bad_gateway = "502 Bad Gateway";
 const std::string service_unavailable = "503 Service Unavailable";
 
-std::string statusToString(http_server::Reply::status_type status) {
+std::string statusToString(http_server::reply::Status status) {
     switch (status) {
-        case http_server::Reply::status_type::ok:
+        case http_server::reply::Status::OK:
             return ok;
-        case http_server::Reply::status_type::created:
+        case http_server::reply::Status::CREATED:
             return created;
-        case http_server::Reply::status_type::accepted:
+        case http_server::reply::Status::ACCEPTED:
             return accepted;
-        case http_server::Reply::status_type::no_content:
+        case http_server::reply::Status::NO_CONTENT:
             return no_content;
-        case http_server::Reply::status_type::multiple_choices:
+        case http_server::reply::Status::MULTIPLE_CHOICES:
             return multiple_choices;
-        case http_server::Reply::status_type::moved_permanently:
+        case http_server::reply::Status::MOVED_PERMANENTLY:
             return moved_permanently;
-        case http_server::Reply::status_type::moved_temporarily:
+        case http_server::reply::Status::MOVED_TEMPORARILY:
             return moved_temporarily;
-        case http_server::Reply::status_type::not_modified:
+        case http_server::reply::Status::NOT_MODIFIED:
             return not_modified;
-        case http_server::Reply::status_type::bad_request:
+        case http_server::reply::Status::BAD_REQUEST:
             return bad_request;
-        case http_server::Reply::status_type::unauthorized:
+        case http_server::reply::Status::UNAUTHORIZED:
             return unauthorized;
-        case http_server::Reply::status_type::forbidden:
+        case http_server::reply::Status::FORBIDDEN:
             return forbidden;
-        case http_server::Reply::status_type::not_found:
+        case http_server::reply::Status::NOT_FOUND:
             return not_found;
-        case http_server::Reply::status_type::internal_server_error:
+        case http_server::reply::Status::INTERNAL_SERVER_ERROR:
             return internal_server_error;
-        case http_server::Reply::status_type::not_implemented:
+        case http_server::reply::Status::NOT_IMPLEMENTED:
             return not_implemented;
-        case http_server::Reply::status_type::bad_gateway:
+        case http_server::reply::Status::BAD_GATEWAY:
             return bad_gateway;
-        case http_server::Reply::status_type::service_unavailable:
+        case http_server::reply::Status::SERVICE_UNAVAILABLE:
             return service_unavailable;
         default:
             return internal_server_error;
@@ -64,10 +64,12 @@ std::string statusToString(http_server::Reply::status_type status) {
 
 namespace http_server {
 
+namespace reply {
+
 Reply::Reply(int httpVersionMajor, int httpVersionMinor)
     : http_(std::format("HTTP/{}.{}", httpVersionMajor, httpVersionMinor)) {}
 
-void Reply::setStatus(status_type st) {
+void Reply::setStatus(Status st) {
     status_ = st;
 }
 
@@ -75,7 +77,7 @@ void Reply::setContent(std::string content) {
     content_.swap(content);
 }
 
-void Reply::addHeader(Header h) {
+void Reply::addHeader(header::Header h) {
     headers_.push_back(std::move(h));
 }
 
@@ -86,7 +88,7 @@ std::vector<boost::asio::const_buffer> Reply::toConstFuffer() const {
     std::vector<boost::asio::const_buffer> bufs;
 
     repStr_ =
-        std::format("{} {}\r\n", http_, std::move(statusToString(status_)));
+        std::format("{} {}\r\n", http_, statusToString(status_));
     bufs.push_back(boost::asio::buffer(repStr_));
 
     for (auto&& h : headers_) {
@@ -187,59 +189,64 @@ const char service_unavailable[] =
     "<body><h1>503 Service Unavailable</h1></body>"
     "</html>";
 
-std::string statusToHtml(http_server::Reply::status_type st) {
+std::string statusToHtml(http_server::reply::Status st) {
     switch (st) {
-        case http_server::Reply::status_type::ok:
-            return ok;
-        case http_server::Reply::status_type::created:
-            return created;
-        case http_server::Reply::status_type::accepted:
-            return accepted;
-        case http_server::Reply::status_type::no_content:
-            return no_content;
-        case http_server::Reply::status_type::multiple_choices:
-            return multiple_choices;
-        case http_server::Reply::status_type::moved_permanently:
-            return moved_permanently;
-        case http_server::Reply::status_type::moved_temporarily:
-            return moved_temporarily;
-        case http_server::Reply::status_type::not_modified:
-            return not_modified;
-        case http_server::Reply::status_type::bad_request:
-            return bad_request;
-        case http_server::Reply::status_type::unauthorized:
-            return unauthorized;
-        case http_server::Reply::status_type::forbidden:
-            return forbidden;
-        case http_server::Reply::status_type::not_found:
-            return not_found;
-        case http_server::Reply::status_type::internal_server_error:
-            return internal_server_error;
-        case http_server::Reply::status_type::not_implemented:
-            return not_implemented;
-        case http_server::Reply::status_type::bad_gateway:
-            return bad_gateway;
-        case http_server::Reply::status_type::service_unavailable:
-            return service_unavailable;
+        case http_server::reply::Status::OK:
+            return "200 OK";
+        case http_server::reply::Status::CREATED:
+            return "201 Created";
+        case http_server::reply::Status::ACCEPTED:
+            return "202 Accepted";
+        case http_server::reply::Status::NO_CONTENT:
+            return "204 No Content";
+        case http_server::reply::Status::MULTIPLE_CHOICES:
+            return "300 Multiple Choices";
+        case http_server::reply::Status::MOVED_PERMANENTLY:
+            return "301 Moved Permanently";
+        case http_server::reply::Status::MOVED_TEMPORARILY:
+            return "302 Moved Temporarily";
+        case http_server::reply::Status::NOT_MODIFIED:
+            return "304 Not Modified";
+        case http_server::reply::Status::BAD_REQUEST:
+            return "400 Bad Request";
+        case http_server::reply::Status::UNAUTHORIZED:
+            return "401 Unauthorized";
+        case http_server::reply::Status::FORBIDDEN:
+            return "403 Forbidden";
+        case http_server::reply::Status::NOT_FOUND:
+            return "404 Not Found";
+        case http_server::reply::Status::INTERNAL_SERVER_ERROR:
+            return "500 Internal Server Error";
+        case http_server::reply::Status::NOT_IMPLEMENTED:
+            return "501 Not Implemented";
+        case http_server::reply::Status::BAD_GATEWAY:
+            return "502 Bad Gateway";
+        case http_server::reply::Status::SERVICE_UNAVAILABLE:
+            return "503 Service Unavailable";
         default:
-            return internal_server_error;
+            return "500 Internal Server Error";
     }
 }
 
 }  // namespace
 
-Reply Reply::stockReply(status_type st, int httpVersionMajor,
+Reply Reply::stockReply(Status st, int httpVersionMajor,
                         int httpVersionMinor) {
     Reply r(httpVersionMajor, httpVersionMinor);
 
     r.setStatus(st);
 
     auto statusStr = statusToHtml(st);
-    r.addHeader({Header::NAME_CONTENT_LEN, std::to_string(statusStr.size())});
-    r.addHeader({Header::NAME_CONTENT_TYPE, Header::VALUE_TEXT_HTML});
+    header::Header cl;
+    cl.name = header::key::CONTENT_LEN; 
+    cl.value = std::to_string(statusStr.size());
+    r.addHeader(std::move(cl));
+    r.addHeader({header::key::CONTENT_TYPE, header::mime_types::HTML});
     r.setContent(std::move(statusStr));
 
     return r;
 }
+
+} // namespace reply
 
 }  // namespace http_server

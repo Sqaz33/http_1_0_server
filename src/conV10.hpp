@@ -31,8 +31,8 @@ class ConnectionV10 final : public IConnection,
     void write_();
 
    private:
-    Request req_;
-    Reply rep_;
+    request::Request req_;
+    reply::Reply rep_;
     std::array<char, 8192> reqBuf_;
 };
 
