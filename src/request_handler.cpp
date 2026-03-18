@@ -9,7 +9,7 @@ Handler::Handler(const std::string& uri) :
 {}
 
 bool Handler::handle(const request::Request& req, reply::Reply& rep) {
-    if (req.uri() == uri_ && methods_.contains(req.method())) {
+    if (req.uri() == uri_ && (methods_.contains(req.method()) || methods_.empty())) {
         f_(req, rep);
         return true;
     }
