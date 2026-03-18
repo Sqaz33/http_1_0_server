@@ -2,7 +2,7 @@
 #   PARSER_TEST=ON
 #   SERVER_TEST=ON
 
-cmake_minimum_required(VERSION 3.5 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.9 FATAL_ERROR)
 
 project(http_1_0_server)
 
@@ -18,6 +18,10 @@ option(SERVER_TEST ON)
 #http parser >
 find_package(FLEX REQUIRED)
 find_package(BISON REQUIRED)
+
+if(POLICY CMP0069)
+    cmake_policy(SET CMP0069 NEW)
+endif()
 
 flex_target(
     scanner 
