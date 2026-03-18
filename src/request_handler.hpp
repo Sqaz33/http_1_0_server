@@ -37,7 +37,7 @@ private:
 };
 
 struct UriMethodHandler {
-    std::vector<Handler> handlers;
+    std::vector<std::unique_ptr<Handler>> handlers;
     std::map<method::Method, Handler*> methods; 
 };
 

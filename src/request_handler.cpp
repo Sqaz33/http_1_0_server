@@ -27,7 +27,7 @@ Handler& Handler::method(method::Method method) {
 
 detail__::Handler& RequestHandler::regHandler(const std::string& uri) {
     auto&& um = handlers_[uri];
-    return um.handlers.emplace_back(uri, &um);
+    return *um.handlers.emplace_back(std::make_unique<detail__::Handler>(uri, &um));
 }
 
 void RequestHandler::handle(const request::Request& req, reply::Reply& rep) {
@@ -40,7 +40,7 @@ void RequestHandler::handle(const request::Request& req, reply::Reply& rep) {
             return;
         }
 
-        um->second.handlers[0].handle(req, rep);
+        um->second.handlers[0]->handle(req, rep);
         return;
     }
 
