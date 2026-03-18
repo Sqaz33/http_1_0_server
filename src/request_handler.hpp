@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 #include <unordered_set>
+#include <map>
 
 #include "reply.hpp"
 #include "request.hpp"
@@ -15,35 +16,42 @@ namespace request_handler {
 
 namespace detail__ {
 
+struct UriMethodHandler;
+
 class Handler {
 public:
     using FuncT = std::function<void(const request::Request&, reply::Reply&)>;
 
-    Handler(const std::string& uri);
+    Handler(const std::string& uri, UriMethodHandler* r_);
 
     Handler& operator()(FuncT&& f);
 
-    bool handle(const request::Request& req, reply::Reply& rep);
+    void handle(const request::Request& req, reply::Reply& rep);
 
     Handler& method(method::Method method);
 
 private:
     FuncT f_;
     std::string uri_;
-    std::unordered_set<typename method::Method> methods_;
+    UriMethodHandler* um_;
+};
+
+struct UriMethodHandler {
+    std::vector<Handler> handlers;
+    std::map<method::Method, Handler*> methods; 
 };
 
 } // namespace detail__
 
-
-struct RequestHandler {
+class RequestHandler {
+public:
     using FuncT = typename detail__::Handler::FuncT;
 
     detail__::Handler& regHandler(const std::string& uri);
     void handle(const request::Request& req, reply::Reply& rep);
 
 private:
-    std::vector<std::unique_ptr<detail__::Handler>> handlers_;
+    std::map<std::string, detail__::UriMethodHandler> handlers_;
 };
 
 }  // namespace request_handler

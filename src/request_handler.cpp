@@ -4,16 +4,13 @@ namespace http_server::request_handler {
     
 namespace detail__ {
 
-Handler::Handler(const std::string& uri) :
+Handler::Handler(const std::string& uri, UriMethodHandler* um) :
     uri_(uri)
+    , um_(um)
 {}
 
-bool Handler::handle(const request::Request& req, reply::Reply& rep) {
-    if (req.uri() == uri_ && (methods_.contains(req.method()) || methods_.empty())) {
-        f_(req, rep);
-        return true;
-    }
-    return false;
+void Handler::handle(const request::Request& req, reply::Reply& rep) {
+    f_(req, rep);
 }
 
 Handler& Handler::operator()(FuncT&& f) {
@@ -22,28 +19,32 @@ Handler& Handler::operator()(FuncT&& f) {
 }
 
 Handler& Handler::method(method::Method method) {
-    methods_.insert(method);
+    um_->methods[method] = this;
     return *this;
 }
 
 } // namespace detail__
 
-
 detail__::Handler& RequestHandler::regHandler(const std::string& uri) {
-    auto h = std::make_unique<detail__::Handler>(uri);
-    handlers_.emplace_back(std::move(h));
-    return *handlers_.back();
+    auto&& um = handlers_[uri];
+    return um.handlers.emplace_back(uri, &um);
 }
 
 void RequestHandler::handle(const request::Request& req, reply::Reply& rep) {
-    for (auto&& h : handlers_) {
-        if (h->handle(req, rep)) {
+    auto um = handlers_.find(req.uri());
+    if (um != handlers_.end()) {
+        auto&& methods = um->second.methods;
+        auto m = methods.find(req.method());
+        if (m != methods.end()) {
+            m->second->handle(req, rep);
             return;
         }
+
+        um->second.handlers[0].handle(req, rep);
+        return;
     }
 
     rep = reply::Reply::stockReply(reply::Status::NOT_FOUND, 1, 0);
 }
-
 
 } // namespace http_server::request_handler
